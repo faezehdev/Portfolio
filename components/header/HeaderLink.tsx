@@ -4,6 +4,7 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
+import { useDetectSize } from '@/hooks/shared/useDetectSize';
 gsap.registerPlugin(ScrollToPlugin);
 type Props = {
   children: React.ReactNode;
@@ -23,9 +24,10 @@ const HeaderLink = ({
   className
 }: Props) => {
   const positions = useRef<{ [key: string]: number }>({});
-
+    const { breakpoint } = useDetectSize()
+const isMobile = breakpoint === 'xs' || breakpoint === 'sm';
   useEffect(() => {
-    const scrollWrapper = document.getElementById(scrollWrapperId);
+    const scrollWrapper = document.getElementById(isMobile ? 'smooth-content' : scrollWrapperId);
     console.log(scrollWrapper,'scrollWrapper');
     
     if (!scrollWrapper) return;
