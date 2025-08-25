@@ -1,0 +1,20 @@
+{
+    "header":{
+       "nav":{
+        "home":"Home",
+        "projects":"Projects",
+        "about-me":"About Me",
+        "contact-me":"Contact Me"
+
+       }
+    },
+    "homepage":{
+        "title":"faezeh"
+    },
+      "heroSection":{
+        "text-1":"Im Faezeh",
+        "text-2":"Frontend Developer",
+        "text-3":"React Developer",
+        "text-4":"Next.js Developer"
+    }
+}
