@@ -10,10 +10,9 @@ import { useDetectSize } from "@/hooks/shared/useDetectSize";
 gsap.registerPlugin(ScrollTrigger)
 interface headerProp {
   handleMenuClick: (id: number) => void
-  activeSection: number | null
   currentSection: number | null
 }
-const Header: React.FC<headerProp> = ({ handleMenuClick, activeSection, currentSection }) => {
+const Header: React.FC<headerProp> = ({ handleMenuClick, currentSection }) => {
   const t = useTranslations('header');
   const locale = useLocale();
   const handleClick = (id: number) => {
@@ -36,7 +35,7 @@ const Header: React.FC<headerProp> = ({ handleMenuClick, activeSection, currentS
             <nav dir={locale == ' fa' ? 'rtl' : 'ltr'} className="menu top-[8dvh]  fixed left-0 right-0 mx-auto
              w-auto flex justify-center items-center">
               <ul dir="rtl" className="desktop-menu w-auto flex gap-6 justify-center items-center">
-                <li className={`menu-item group/menu ${activeSection === 0 || currentSection === 0 ? 'active' : ''} `}>
+                <li className={`menu-item group/menu ${  currentSection === 0 ? 'active' : ''} `}>
                   <HeaderLink onClick={() => handleClick(0)} className={`duration-100 group-[&.active]/menu:text-primary`}>
                     {t('nav.home')}
                   </HeaderLink>
@@ -49,17 +48,17 @@ const Header: React.FC<headerProp> = ({ handleMenuClick, activeSection, currentS
               
               
             </li> */}
-                <li className={`menu-item  group/menu ${activeSection === 1 || currentSection === 1 ? 'active' : ''}`}>
+                <li className={`menu-item  group/menu ${ currentSection === 1 ? 'active' : ''}`}>
                   <HeaderLink toSection={0} onClick={() => handleClick(1)} className={`duration-100 group-[&.active]/menu:text-primary`}>
                     {t('nav.projects')}
                   </HeaderLink>
                 </li>
-                <li className={`menu-item  group/menu ${activeSection === 2 || currentSection === 2 ? 'active' : ''}`}>
+                <li className={`menu-item  group/menu ${ currentSection === 2 ? 'active' : ''}`}>
                   <HeaderLink toSection={1} onClick={() => handleClick(2)} className={`duration-100 group-[&.active]/menu:text-primary`}>
                     {t('nav.about-me')}
                   </HeaderLink>
                 </li>
-                <li className={`menu-item  group/menu ${activeSection === 3 || currentSection === 3 ? 'active' : ''}`}>
+                <li className={`menu-item  group/menu ${ currentSection === 3 ? 'active' : ''}`}>
 
                   <HeaderLink toSection={2} onClick={() => handleClick(3)} className={`duration-100 group-[&.active]/menu:text-primary`}>
                     {t('nav.contact-me')}
@@ -84,7 +83,8 @@ const Header: React.FC<headerProp> = ({ handleMenuClick, activeSection, currentS
             </div>
             <nav dir={locale == ' fa' ? 'rtl' : 'ltr'} className="menu w-auto flex justify-start items-center">
               <ul dir="rtl" className="desktop-menu w-auto flex gap-6 justify-center items-center">
-                <li className={`menu-item group/menu ${activeSection === -1 || currentSection === -1 ? 'active' : ''} `}>
+                <li className={`menu-item group/menu ${ currentSection === -1 ? 'active' : ''} `}>
+                {/* <li className={`menu-item group/menu ${activeSection === -1 || currentSection === -1 ? 'active' : ''} `}> */}
                   <HeaderLink onClick={() => handleClick(-1)} className={`duration-100 group-[&.active]/menu:text-primary`}>
                     {t('nav.home')}
                   </HeaderLink>
@@ -97,17 +97,17 @@ const Header: React.FC<headerProp> = ({ handleMenuClick, activeSection, currentS
               
               
             </li> */}
-                <li className={`menu-item  group/menu ${activeSection === 0 || currentSection === 0 ? 'active' : ''}`}>
+                <li className={`menu-item  group/menu ${currentSection === 0 ? 'active' : ''}`}>
                   <HeaderLink toSection={0} onClick={() => handleClick(0)} className={`duration-100 group-[&.active]/menu:text-primary`}>
                     {t('nav.projects')}
                   </HeaderLink>
                 </li>
-                <li className={`menu-item  group/menu ${activeSection === 1 || currentSection === 1 ? 'active' : ''}`}>
+                <li className={`menu-item  group/menu ${ currentSection === 1 ? 'active' : ''}`}>
                   <HeaderLink toSection={1} onClick={() => handleClick(1)} className={`duration-100 group-[&.active]/menu:text-primary`}>
                     {t('nav.about-me')}
                   </HeaderLink>
                 </li>
-                <li className={`menu-item  group/menu ${activeSection === 2 || currentSection === 2 ? 'active' : ''}`}>
+                <li className={`menu-item  group/menu ${ currentSection === 2 ? 'active' : ''}`}>
 
                   <HeaderLink toSection={2} onClick={() => handleClick(2)} className={`duration-100 group-[&.active]/menu:text-primary`}>
                     {t('nav.contact-me')}

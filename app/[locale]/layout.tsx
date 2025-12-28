@@ -3,9 +3,6 @@ import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import './globals.css';
 import 'simplebar-react/dist/simplebar.min.css';
-
-// import { EncodeSans, Inter ,Caveat} from '@/lib/myFont';
-// import { useRef } from 'react';
 export default async function LocaleLayout({
   children,
   params,

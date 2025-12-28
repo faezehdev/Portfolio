@@ -24,35 +24,34 @@ const HeaderLink = ({
   className
 }: Props) => {
   const positions = useRef<{ [key: string]: number }>({});
-    const { breakpoint } = useDetectSize()
-const isMobile = breakpoint === 'xs' || breakpoint === 'sm';
+  const { breakpoint } = useDetectSize()
+  const isMobile = breakpoint === 'xs' || breakpoint === 'sm';
   useEffect(() => {
     const scrollWrapper = document.getElementById(isMobile ? 'smooth-content' : scrollWrapperId);
-    console.log(scrollWrapper,'scrollWrapper');
-    
+    console.log(scrollWrapper, 'scrollWrapper');
+
     if (!scrollWrapper) return;
     const isVertical = window.innerWidth <= 768;
     const rect = scrollWrapper.getBoundingClientRect();
     const scrollY = window.scrollY || window.pageYOffset;
     const absoluteY = rect.top + scrollY;
     const sectionWidth =
-    
-      scrollWrapper.querySelector('.section')?.clientWidth || window.innerWidth;
+    scrollWrapper.querySelector('.section')?.clientWidth || window.innerWidth;
     scrollWrapper.querySelectorAll('.section').forEach((section, i) => {
       const rect = section.getBoundingClientRect();
       if (isVertical) {
-         console.log('isVertical',isVertical)
-         const extraOffset = i === 1 || i === 2 ? 400 : 0;
-           ;
-        positions.current[i] = window.scrollY + rect.top +extraOffset;
+        console.log('isVertical', isVertical)
+        const extraOffset = i === 1 || i === 2 ? 400 : 0;
+        ;
+        positions.current[i] = window.scrollY + rect.top + extraOffset;
       } else {
         positions.current[i] = absoluteY + i * sectionWidth;
-      
+
       }
     });
 
     if (toSectionId) {
-       console.log('toSectionId',toSectionId)
+      console.log('toSectionId', toSectionId)
       const elem = document.getElementById(toSectionId);
       if (elem) {
         const rect = elem.getBoundingClientRect();
@@ -65,8 +64,6 @@ const isMobile = breakpoint === 'xs' || breakpoint === 'sm';
 
   const handleClick = () => {
     let targetScroll = 0;
-
- 
     if (typeof toSection === 'number') {
       targetScroll = positions.current[toSection] ?? 0;
     } else if (toSectionId) {
@@ -79,7 +76,7 @@ const isMobile = breakpoint === 'xs' || breakpoint === 'sm';
       ease: 'power2.out',
     });
     if (onClick) {
-      onClick(); 
+      onClick();
     }
   };
 
