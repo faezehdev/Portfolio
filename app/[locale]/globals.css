@@ -37,96 +37,95 @@
   --breakpoint-2xl: 120rem;
 } */
 @font-face {
-  font-family: 'YekanBakh';
-  src: url('/fonts/fa/YekanBakh-Light.woff') format('woff2');
+  font-family: "YekanBakh";
+  src: url("/fonts/fa/YekanBakh-Light.woff") format("woff2");
   font-weight: 300;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Caveat';
-  src: url('/fonts/en/Caveat.ttf') format('woff2');
+  font-family: "Caveat";
+  src: url("/fonts/en/Caveat.ttf") format("woff2");
   font-weight: 300;
   font-style: normal;
   font-display: swap;
 }
 
-
 @font-face {
-  font-family: 'YekanBakh';
-  src: url('/fonts/fa/YekanBakh-Regular.woff2') format('woff2');
+  font-family: "YekanBakh";
+  src: url("/fonts/fa/YekanBakh-Regular.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'YekanBakh';
- src: url('/fonts/fa/YekanBakh-Regular.woff') format('woff2');
+  font-family: "YekanBakh";
+  src: url("/fonts/fa/YekanBakh-Regular.woff") format("woff2");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'YekanBakh';
-   src: url('/fonts/fa/YekanBakh-SemiBold.woff') format('woff2');
+  font-family: "YekanBakh";
+  src: url("/fonts/fa/YekanBakh-SemiBold.woff") format("woff2");
   font-weight: 600;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'YekanBakh';
-   src: url('/fonts/fa/YekanBakh-Bold.woff2') format('woff2');
+  font-family: "YekanBakh";
+  src: url("/fonts/fa/YekanBakh-Bold.woff2") format("woff2");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'YekanBakh';
-   src: url('/fonts/fa/YekanBakh-Black.woff') format('woff2');
+  font-family: "YekanBakh";
+  src: url("/fonts/fa/YekanBakh-Black.woff") format("woff2");
   font-weight: 800;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Inter';
-  src: url('/fonts/en/Inter_18pt-ExtraLight.ttf') format('ttf');
+  font-family: "Inter";
+  src: url("/fonts/en/Inter_18pt-ExtraLight.ttf") format("ttf");
   font-weight: 200;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Inter';
-  src: url('/fonts/en/Inter_18pt-Light.ttf') format('ttf');
+  font-family: "Inter";
+  src: url("/fonts/en/Inter_18pt-Light.ttf") format("ttf");
   font-weight: 300;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Inter';
-  src: url('/fonts/en/Inter_18pt-Medium.ttf') format('ttf');
+  font-family: "Inter";
+  src: url("/fonts/en/Inter_18pt-Medium.ttf") format("ttf");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Inter';
-  src: url('/fonts/en/Inter_18pt-Regular.ttf') format('ttf');
+  font-family: "Inter";
+  src: url("/fonts/en/Inter_18pt-Regular.ttf") format("ttf");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Inter';
-  src: url('/fonts/en/Inter_18pt-Bold.ttf') format('ttf');
+  font-family: "Inter";
+  src: url("/fonts/en/Inter_18pt-Bold.ttf") format("ttf");
   font-weight: 800;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Inter';
-  src: url('/fonts/en/Inter_18pt-Black.ttf') format('ttf');
+  font-family: "Inter";
+  src: url("/fonts/en/Inter_18pt-Black.ttf") format("ttf");
   font-weight: 900;
   font-style: normal;
   font-display: swap;
@@ -134,75 +133,74 @@
 
 /* حالا استفاده از فونت ها در کلاس های CSS */
 .persian {
-font-family: 'YekanBakh';
+  font-family: "YekanBakh";
   direction: rtl;
   text-align: right;
-    font-weight: 700;
+  font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
 
 .english {
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 .cursive {
-  font-family: 'Caveat', cursive;
+  font-family: "Caveat", cursive;
 }
 * {
   box-sizing: border-box;
-
 }
 
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
   padding: 0;
-  overflow-x: hidden; 
-    scrollbar-width: none;
+  overflow-x: hidden;
+  scrollbar-width: none;
   -ms-overflow-style: none;
 }
 ::-webkit-scrollbar {
   width: 0px;
-  background: transparent; 
+  background: transparent;
 }
 
 #smooth-wrapper {
-  position: fixed; 
+  position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  overflow: hidden; 
+  overflow: hidden;
   will-change: transform;
 }
 
 #smooth-content {
   position: relative;
   min-height: 100vh;
-  width: 100%; 
+  width: 100%;
   /* overflow: visible; */
-    min-height: 100vh;
+  min-height: 100vh;
 }
 
 .horizontal-scroll {
   display: flex;
-  width: max-content; 
+  width: max-content;
   height: 100dvh;
-    min-height: 100vh;
+  min-height: 100vh;
 }
 
 .horizontal-scroll > section {
   width: 100vw;
   height: 100vh;
-    min-height: 100vh;
+  min-height: 100vh;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 4rem;
   font-weight: bold;
-
 }
 .custom-scrollbar {
   position: relative;
@@ -223,87 +221,101 @@ html, body {
 .menu-item.active a {
   color: #7464c9;
 }
-html{
-   font-family: 'Inter';
+html {
+  font-family: "Inter";
 }
 
-.animated-border-box, .animated-border-box-glow{
+.animated-border-box,
+.animated-border-box-glow {
   max-height: 400px;
-  max-width: 800px;
+  max-width: 500px;
   height: 100%;
   width: 100%;
   position: absolute;
-  overflow: hidden; 
+  overflow: hidden;
   z-index: 0;
   /* Border Radius */
-	border-radius: 10px;
+  border-radius: 10px;
 }
 
-.animated-border-box-glow{
+.animated-border-box-glow {
   overflow: hidden;
   /* Glow Blur */
   filter: blur(20px);
 }
 
-.animated-border-box:before, .animated-border-box-glow:before {
-  content: '';
+.animated-border-box:before,
+.animated-border-box-glow:before {
+  content: "";
   z-index: -2;
   text-align: center;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%) rotate(0deg);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(0deg);
   position: absolute;
-	width: 99999px;
-	height: 99999px;
-	background-repeat: no-repeat;
-	background-position: 0 0;
+  width: 99999px;
+  height: 99999px;
+  background-repeat: no-repeat;
+  background-position: 0 0;
   /*border color, change middle color*/
-	background-image: conic-gradient(rgba(0,0,0,0), #cd40f8, rgba(0,0,0,0) 25%);
+  background-image: conic-gradient(
+    rgba(0, 0, 0, 0),
+    #cd40f8,
+    rgba(0, 0, 0, 0) 25%
+  );
   /* change speed here */
-	animation: rotate 4s linear infinite;
+  animation: rotate 4s linear infinite;
 }
 
 .animated-border-box:after {
-	content: '';
-	position: absolute;
-	z-index: -1;
+  content: "";
+  position: absolute;
+  z-index: -1;
   /* border width */
-	left: 5px;
-	top: 5px;
+  left: 5px;
+  top: 5px;
   /* double the px from the border width left */
-	width: calc(100% - 10px);
-	height: calc(100% - 10px);
+  width: calc(100% - 10px);
+  height: calc(100% - 10px);
   /*bg color*/
-	background: #292a2e;
+  background: #292a2e;
   /*box border radius*/
-	border-radius: 7px;
+  border-radius: 7px;
 }
 .heroIMG.animated-border-box:after {
-
-	background: transparent;
-
+  background: transparent;
 }
 
 @keyframes rotate {
-	100% {
-		transform: translate(-50%, -50%) rotate(1turn);
-	}
+  100% {
+    transform: translate(-50%, -50%) rotate(1turn);
+  }
 }
 @media screen and (max-width: 1000px) {
-
-  body{
+  body {
     height: auto !important;
   }
   .animated-border-box {
     position: relative !important;
   }
-  #smooth-content{
+  #smooth-content {
     display: flex;
     flex-direction: column;
-    gap:4em
+    gap: 4em;
   }
 }
 
 /*// Border Animation END//*/
 
+.mobile-section-reveal {
+  opacity: 0;
+  transform: translateY(70px) scale(0.98);
+  transition:
+    opacity 0.8s ease,
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
 
+.mobile-section-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}

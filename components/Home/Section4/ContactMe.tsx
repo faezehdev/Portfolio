@@ -169,7 +169,8 @@ const ContactMe: React.FC<ContactMeProp> = () => {
     <div
       className="
         contactMe
-        mo:w-[95%]
+        lg:w-full
+        mo:w-[90%]
         mo:py-4
         border-[3px]
         border-primary

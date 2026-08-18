@@ -22,31 +22,20 @@ const AboutMe = () => {
        * ScrollWrapper باید اول ScrollTrigger اصلی
        * horizontal را ساخته باشد.
        */
-      const horizontalTrigger =
-        ScrollTrigger.getById("horizontal-scroll");
+      const horizontalTrigger = ScrollTrigger.getById("horizontal-scroll");
 
-      const containerAnimation =
-        horizontalTrigger?.animation;
+      const containerAnimation = horizontalTrigger?.animation;
 
-      console.log(
-        "AboutMe -> horizontalTrigger:",
-        horizontalTrigger
-      );
+      console.log("AboutMe -> horizontalTrigger:", horizontalTrigger);
 
-      console.log(
-        "AboutMe -> containerAnimation:",
-        containerAnimation
-      );
+      console.log("AboutMe -> containerAnimation:", containerAnimation);
 
       /*
        * اگر هنوز ScrollTrigger اصلی ساخته نشده،
        * دوباره تلاش کن.
        */
       if (!containerAnimation) {
-        timeoutId = setTimeout(
-          initializeAnimation,
-          100
-        );
+        timeoutId = setTimeout(initializeAnimation, 100);
 
         return;
       }
@@ -90,8 +79,7 @@ const AboutMe = () => {
                 start: "left 85%",
                 end: "left 40%",
 
-                toggleActions:
-                  "play none none reverse",
+                toggleActions: "play none none reverse",
 
                 /*
                  * برای تست می‌توانی فعالش کنی:
@@ -99,7 +87,7 @@ const AboutMe = () => {
                  * markers: true,
                  */
               },
-            }
+            },
           );
         }
 
@@ -132,14 +120,13 @@ const AboutMe = () => {
                 start: "left 80%",
                 end: "left 40%",
 
-                toggleActions:
-                  "play none none reverse",
+                toggleActions: "play none none reverse",
 
                 /*
                  * markers: true,
                  */
               },
-            }
+            },
           );
         }
       }, sectionRef);
@@ -179,7 +166,9 @@ const AboutMe = () => {
       className="
         lg:py-20
         lg:px-6
-        mo:w-[95%]
+        
+        lg:min-w-[800px]
+        mo:w-[90%]
         mo:py-4
         mx-auto
         bg-[#0f0f0f]
@@ -205,10 +194,7 @@ const AboutMe = () => {
           text-center
         "
       >
-        <Title
-          ref={titleRef}
-          tag="h2"
-        >
+        <Title ref={titleRef} tag="h2">
           درباره من
         </Title>
 
@@ -224,12 +210,10 @@ const AboutMe = () => {
             font-light
           "
         >
-          من فائزه‌ام، یه توسعه‌دهنده‌ی فرانت‌اند که عاشق
-          خلق تجربه‌های تعاملی و جذاب برای کاربرهاست.
-          عاشق یادگیریم و هر روز با اشتیاق یه چیز جدید
-          توی دنیای React و تکنولوژی‌های وب کشف می‌کنم.
-          از پروژه‌های واقعی تا چالش‌های فنی، همیشه دنبال
-          فرصتی‌ام که بهتر بشم و بتونم تأثیر بذارم.
+          من فائزه‌ام، یه توسعه‌دهنده‌ی فرانت‌اند که عاشق خلق تجربه‌های تعاملی و
+          جذاب برای کاربرهاست. عاشق یادگیریم و هر روز با اشتیاق یه چیز جدید توی
+          دنیای React و تکنولوژی‌های وب کشف می‌کنم. از پروژه‌های واقعی تا
+          چالش‌های فنی، همیشه دنبال فرصتی‌ام که بهتر بشم و بتونم تأثیر بذارم.
         </p>
       </div>
     </section>

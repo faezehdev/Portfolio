@@ -1,32 +1,58 @@
-import Slider from "./Seaction2/Slider"
-import AboutMe from "./Section3/AboutMe"
-import ContactMe from "./Section4/ContactMe"
+"use client";
 
-const MobileContent = ()=>{
-    return(
-        <>
-            <section
-                id="section-1"
-                className="section lg:w-screen overflow-hidden  flex items-center justify-center text-6xl font-bold">
+import AboutMe from "./Section3/AboutMe";
+import ContactMe from "./Section4/ContactMe";
+import Slider from "./Seaction2/Slider";
+import { useRef } from "react";
+import { useScrollReveal } from "@/hooks/shared/useScrollReveal";
 
-                <Slider />
+const MobileSection = ({
+  children,
+  id,
+}: {
+  children: React.ReactNode;
+  id: string;
+}) => {
+  const ref = useRef<HTMLElement | null>(null);
 
-              </section>
+  useScrollReveal(ref);
 
-              <section
-                id="section-2"
-                className="section py-[2em] lg:w-screen overflow-hidden  flex items-center justify-center text-6xl font-bold">
+  return (
+    <section
+      ref={ref}
+      id={id}
+      className="
+        section
+        mobile-section-reveal
+        overflow-hidden
+        flex
+        items-center
+        justify-center
+        text-6xl
+        font-bold
+      "
+    >
+      {children}
+    </section>
+  );
+};
 
-                <AboutMe />
-              </section>
+const MobileContent = () => {
+  return (
+    <>
+      <MobileSection id="section-1">
+        <Slider />
+      </MobileSection>
 
-              <section
-                id="section-3"
-                className="section lg:w-screen pb-[3em] flex items-center justify-center text-6xl font-bold">
+      <MobileSection id="section-2">
+        <AboutMe />
+      </MobileSection>
 
-                <ContactMe />
-              </section>
-        </>
-    )
-}
-export default MobileContent
+      <MobileSection id="section-3">
+        <ContactMe />
+      </MobileSection>
+    </>
+  );
+};
+
+export default MobileContent;
