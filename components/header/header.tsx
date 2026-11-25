@@ -4,6 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 
 import HeaderLink from "./HeaderLink";
 import Image from "next/image";
+import LanguageSwitcher from "../shared/LanguageSwitcher";
 import React from "react";
 import { useDetectSize } from "@/hooks/shared/useDetectSize";
 
@@ -15,6 +16,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ handleMenuClick, currentSection }) => {
   const t = useTranslations("header");
   const locale = useLocale();
+  const isRtl = locale === "fa";
 
   const { breakpoint, mounted } = useDetectSize();
 
@@ -23,9 +25,12 @@ const Header: React.FC<HeaderProps> = ({ handleMenuClick, currentSection }) => {
   const handleClick = (id: number) => {
     handleMenuClick(id);
   };
+
   if (!mounted) return null;
+
   return (
     <header
+      dir={isRtl ? "rtl" : "ltr"}
       className="
         header
         fixed
@@ -34,160 +39,115 @@ const Header: React.FC<HeaderProps> = ({ handleMenuClick, currentSection }) => {
         right-0
         z-40
         w-full
-        py-1.5
-        text-en
+        py-2
+        backdrop-blur-md
       "
     >
       <div
-        className={`
+        className="
           inner
           m-auto
           flex
           w-[90%]
           items-center
-          ${isMobile ? "justify-center" : "justify-between"}
-        `}
+          justify-between
+          gap-4
+        "
       >
-        {/* =========================
-            LOGO
-        ========================== */}
-
-        <div className="logo">
+        <div className="logo shrink-0">
           <Image src="/images/logo.png" alt="faezeh" width={100} height={10} />
         </div>
 
-        {/* =========================
-            NAV
-        ========================== */}
-
-        <nav
-          dir={locale === "fa" ? "rtl" : "ltr"}
-          className={`
-            menu
-            flex
-            items-center
-            justify-center
-            ${
-              isMobile
-                ? `
-                  fixed
-                  top-[8dvh]
-                  left-0
-                  right-0
-                  mx-auto
+        <div className="flex items-center gap-6">
+          {!isMobile && (
+            <nav className="menu flex items-center justify-center w-auto">
+              <ul
+                className="
+                  desktop-menu
+                  flex
                   w-auto
-                `
-                : "w-auto"
-            }
-          `}
-        >
-          <ul
-            dir={locale === "fa" ? "rtl" : "ltr"}
-            className="
-              desktop-menu
-              flex
-              w-auto
-              items-center
-              justify-center
-              gap-6
-            "
-          >
-            {/* =========================
-                HOME
-                section-0
-            ========================== */}
-
-            <li
-              className={`
-                menu-item
-                group/menu
-                ${currentSection === 0 ? "active" : ""}
-              `}
-            >
-              <HeaderLink
-                onClick={() => handleClick(0)}
-                className="
-                  duration-100
-                  group-[&.active]/menu:text-primary
+                  items-center
+                  justify-center
+                  gap-6
                 "
               >
-                {t("nav.home")}
-              </HeaderLink>
-            </li>
+                <li
+                  className={`
+                    menu-item
+                    group/menu
+                    ${currentSection === 0 ? "active" : ""}
+                  `}
+                >
+                  <HeaderLink
+                    onClick={() => handleClick(0)}
+                    className="
+                      duration-100
+                      group-[&.active]/menu:text-primary
+                    "
+                  >
+                    {t("nav.home")}
+                  </HeaderLink>
+                </li>
 
-            {/* =========================
-                PROJECTS
-                section-1
-            ========================== */}
+                <li
+                  className={`
+                    menu-item
+                    group/menu
+                    ${currentSection === 1 ? "active" : ""}
+                  `}
+                >
+                  <HeaderLink
+                    onClick={() => handleClick(1)}
+                    className="
+                      duration-100
+                      group-[&.active]/menu:text-primary
+                    "
+                  >
+                    {t("nav.projects")}
+                  </HeaderLink>
+                </li>
 
-            <li
-              className={`
-                menu-item
-                group/menu
-                ${currentSection === 1 ? "active" : ""}
-              `}
-            >
-              <HeaderLink
-                toSection={0}
-                onClick={() => handleClick(1)}
-                className="
-                  duration-100
-                  group-[&.active]/menu:text-primary
-                "
-              >
-                {t("nav.projects")}
-              </HeaderLink>
-            </li>
+                <li
+                  className={`
+                    menu-item
+                    group/menu
+                    ${currentSection === 2 ? "active" : ""}
+                  `}
+                >
+                  <HeaderLink
+                    onClick={() => handleClick(2)}
+                    className="
+                      duration-100
+                      group-[&.active]/menu:text-primary
+                    "
+                  >
+                    {t("nav.about-me")}
+                  </HeaderLink>
+                </li>
 
-            {/* =========================
-                ABOUT ME
-                section-2
-            ========================== */}
+                <li
+                  className={`
+                    menu-item
+                    group/menu
+                    ${currentSection === 3 ? "active" : ""}
+                  `}
+                >
+                  <HeaderLink
+                    onClick={() => handleClick(3)}
+                    className="
+                      duration-100
+                      group-[&.active]/menu:text-primary
+                    "
+                  >
+                    {t("nav.contact-me")}
+                  </HeaderLink>
+                </li>
+              </ul>
+            </nav>
+          )}
 
-            <li
-              className={`
-                menu-item
-                group/menu
-                ${currentSection === 2 ? "active" : ""}
-              `}
-            >
-              <HeaderLink
-                toSection={1}
-                onClick={() => handleClick(2)}
-                className="
-                  duration-100
-                  group-[&.active]/menu:text-primary
-                "
-              >
-                {t("nav.about-me")}
-              </HeaderLink>
-            </li>
-
-            {/* =========================
-                CONTACT
-                section-3
-            ========================== */}
-
-            <li
-              className={`
-                menu-item
-                group/menu
-                ${currentSection === 3 ? "active" : ""}
-              `}
-            >
-              <HeaderLink
-                toSection={2}
-                onClick={() => handleClick(3)}
-                className="
-                  duration-100
-                  group-[&.active]/menu:text-primary
-                "
-              >
-                {t("nav.contact-me")}
-              </HeaderLink>
-            </li>
-          </ul>
-        </nav>
+          <LanguageSwitcher />
+        </div>
       </div>
     </header>
   );

@@ -1,11 +1,11 @@
-"use client";
+import React, { FC } from "react";
 
 import AboutMe from "./Section3/AboutMe";
 import ContactMe from "./Section4/ContactMe";
-import { FC } from "react";
 import ScrollWrapper from "../scroll/ScrollWrapper";
 import Slider from "./Seaction2/Slider";
 import { activeOnScrollReturnType } from "@/hooks/useActiveSectionScroll";
+import { useLocale } from "next-intl";
 
 export type DesktopContentPropType = Pick<
   activeOnScrollReturnType,
@@ -15,125 +15,57 @@ export type DesktopContentPropType = Pick<
   | "setCurrentSection"
 >;
 
+const sectionBaseClass =
+  "section shrink-0 w-screen min-h-dvh h-auto md:h-screen overflow-hidden flex items-center justify-center py-8 md:py-0";
+
 const DesktopContent: FC<DesktopContentPropType> = ({
   firstSectionRef,
   currentSection,
   setCurrentSection,
   scrollWrapperRef,
 }) => {
+  const locale = useLocale();
+  const isRtl = locale === "fa";
+
+  const sections = [
+    <section
+      key="section-1"
+      id="section-1"
+      data-section-index="1"
+      dir={isRtl ? "rtl" : "ltr"}
+      className={sectionBaseClass}
+    >
+      <Slider />
+    </section>,
+    <section
+      key="section-2"
+      id="section-2"
+      data-section-index="2"
+      dir={isRtl ? "rtl" : "ltr"}
+      className={sectionBaseClass}
+    >
+      <AboutMe />
+    </section>,
+    <section
+      key="section-3"
+      id="section-3"
+      data-section-index="3"
+      dir={isRtl ? "rtl" : "ltr"}
+      className={`${sectionBaseClass} md:min-w-[500px]`}
+    >
+      <ContactMe />
+    </section>,
+  ];
+
   return (
     <ScrollWrapper
       ref={scrollWrapperRef}
       firstSectionRef={firstSectionRef}
       currentSection={currentSection}
       setCurrentSection={setCurrentSection}
+      isRtl={isRtl}
     >
-      {/* <section
-        id="section-1"
-        data-section-index="1"
-        dir="rtl"
-        className="
-      section
-       w-screen
-      h-screen
-      shrink-0
-      overflow-hidden
-      flex
-      items-center
-      justify-center
-    "
-      >
-        <Slider />
-      </section>
-
-      <section
-        id="section-2"
-        data-section-index="2"
-        dir="rtl"
-        className="
-          w-screen
-      section
-      h-screen
-      shrink-0
-      overflow-hidden
-      flex
-      items-center
-      justify-center
-    "
-      >
-        <AboutMe />
-      </section>
-
-      <section
-        id="section-3"
-        data-section-index="3"
-        dir="rtl"
-        className="
-         w-screen
-      section
-      h-screen
-      shrink-0
-      overflow-hidden
-      flex
-      items-center
-      justify-center
-    "
-      >
-        <ContactMe />
-      </section> */}
-      <section
-        id="section-1"
-        data-section-index="1"
-        dir="rtl"
-        className="
-    section
-    h-screen
-    shrink-0
-    overflow-hidden
-    flex
-    w-screen
-    items-center
-    justify-center
-  "
-      >
-        <Slider />
-      </section>
-
-      <section
-        id="section-2"
-        data-section-index="2"
-        dir="rtl"
-        className="
-    section
-    h-screen
-  w-screen
-    overflow-hidden
-    flex
-    items-center
-    justify-center
-s
-  "
-      >
-        <AboutMe />
-      </section>
-
-      <section
-        id="section-3"
-        data-section-index="3"
-        dir="rtl"
-        className="
-    section
-    h-screen
-     min-w-[500px]
-       w-screen
-    overflow-hidden
-    flex
-    items-center
-    justify-center
-  "
-      >
-        <ContactMe />
-      </section>
+      {sections}
     </ScrollWrapper>
   );
 };

@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
+import { useLocale, useTranslations } from "next-intl";
 
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Title from "@/components/shared/title/Title";
@@ -11,279 +12,302 @@ gsap.registerPlugin(ScrollTrigger);
 interface ContactMeProp {}
 
 const ContactMe: React.FC<ContactMeProp> = () => {
+  const t = useTranslations("contactSection");
+  const locale = useLocale();
+  const isRtl = locale === "fa";
+
   const sectionRef = useRef<HTMLElement | null>(null);
   const formRef = useRef<HTMLFormElement | null>(null);
   const titleRef = useRef<HTMLHeadingElement | null>(null);
+  const hasPlayedRef = useRef(false);
+
+  const playEntrance = useCallback(() => {
+    if (hasPlayedRef.current) return;
+    hasPlayedRef.current = true;
+
+    if (titleRef.current) {
+      gsap.fromTo(
+        titleRef.current,
+        { opacity: 0, x: isRtl ? 40 : -40, force3D: true },
+        {
+          opacity: 1,
+          x: 0,
+          duration: 0.7,
+          ease: "power2.out",
+          overwrite: "auto",
+        },
+      );
+    }
+
+    if (formRef.current) {
+      gsap.fromTo(
+        formRef.current,
+        { opacity: 0, y: 40, force3D: true },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          delay: 0.1,
+          ease: "power2.out",
+          overwrite: "auto",
+        },
+      );
+    }
+  }, [isRtl]);
+
+  const resetEntrance = useCallback(() => {
+    hasPlayedRef.current = false;
+
+    if (titleRef.current) {
+      gsap.set(titleRef.current, {
+        opacity: 0,
+        x: isRtl ? 40 : -40,
+        force3D: true,
+      });
+    }
+
+    if (formRef.current) {
+      gsap.set(formRef.current, {
+        opacity: 0,
+        y: 40,
+        force3D: true,
+      });
+    }
+  }, [isRtl]);
 
   useEffect(() => {
-    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+    const isDesktop = window.matchMedia("(min-width: 768px)").matches;
+    if (!isDesktop) return;
 
+    resetEntrance();
+
+    let attempts = 0;
+    const maxAttempts = 40;
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
     let ctx: gsap.Context | null = null;
+    let rafId: number | null = null;
+
+    const checkInViewport = () => {
+      if (!sectionRef.current) return;
+      const rect = sectionRef.current.getBoundingClientRect();
+      const vw = window.innerWidth;
+
+      // اگر سکشن در محدوده‌ی دید قرار گرفت
+      const visible = rect.left < vw * 0.92 && rect.right > vw * 0.08;
+      if (visible) {
+        playEntrance();
+      } else if (rect.left >= vw || rect.right <= 0) {
+        resetEntrance();
+      }
+    };
 
     const initializeAnimation = () => {
-      /*
-       * ScrollTrigger اصلی که داخل ScrollWrapper
-       * ساخته شده است.
-       */
       const horizontalTrigger = ScrollTrigger.getById("horizontal-scroll");
-
       const containerAnimation = horizontalTrigger?.animation;
 
-      console.log("ContactMe -> horizontalTrigger:", horizontalTrigger);
-
-      console.log("ContactMe -> containerAnimation:", containerAnimation);
-
-      /*
-       * اگر ScrollWrapper هنوز آماده نیست،
-       * دوباره تلاش می‌کنیم.
-       */
-      if (!containerAnimation) {
-        timeoutId = setTimeout(initializeAnimation, 100);
-
+      if (!containerAnimation || !sectionRef.current) {
+        attempts += 1;
+        if (attempts < maxAttempts) {
+          timeoutId = setTimeout(initializeAnimation, 100);
+        } else {
+          playEntrance();
+        }
         return;
       }
 
-      /*
-       * فقط animationهای ContactMe
-       * داخل همین context ساخته می‌شوند.
-       */
       ctx = gsap.context(() => {
-        /*
-         * =========================
-         * TITLE
-         * =========================
-         */
+        ScrollTrigger.create({
+          trigger: sectionRef.current,
+          containerAnimation,
+          start: "left right",
+          end: "right left",
+          onEnter: playEntrance,
+          onEnterBack: playEntrance,
+          onLeave: resetEntrance,
+          onLeaveBack: resetEntrance,
+        });
 
-        if (titleRef.current && sectionRef.current) {
-          gsap.fromTo(
-            titleRef.current,
-            {
-              opacity: 0,
-              x: -50,
-            },
-            {
-              opacity: 1,
-              x: 0,
+        const onScrollOrTick = () => {
+          if (rafId !== null) cancelAnimationFrame(rafId);
+          rafId = requestAnimationFrame(checkInViewport);
+        };
 
-              duration: 0.8,
+        window.addEventListener("scroll", onScrollOrTick, { passive: true });
+        checkInViewport();
 
-              ease: "power2.out",
-
-              scrollTrigger: {
-                trigger: sectionRef.current,
-
-                containerAnimation,
-
-                start: "left 85%",
-                end: "left 40%",
-
-                toggleActions: "play none none reverse",
-
-                /*
-                 * برای تست:
-                 *
-                 * markers: true,
-                 */
-              },
-            },
-          );
-        }
-
-        /*
-         * =========================
-         * FORM
-         * =========================
-         */
-
-        if (formRef.current && sectionRef.current) {
-          gsap.fromTo(
-            formRef.current,
-            {
-              opacity: 0,
-              y: 50,
-            },
-            {
-              opacity: 1,
-              y: 0,
-
-              duration: 0.8,
-
-              delay: 0.15,
-
-              ease: "power2.out",
-
-              scrollTrigger: {
-                trigger: sectionRef.current,
-
-                /*
-                 * قبلاً اینجا containerAnimation
-                 * نداشتی و فرم با scroll عمودی
-                 * کنترل می‌شد.
-                 */
-                containerAnimation,
-
-                start: "left 80%",
-                end: "left 40%",
-
-                toggleActions: "play none none reverse",
-
-                /*
-                 * markers: true,
-                 */
-              },
-            },
-          );
-        }
+        return () => {
+          window.removeEventListener("scroll", onScrollOrTick);
+        };
       }, sectionRef);
 
-      /*
-       * بعد از ایجاد Triggerها
-       * محاسبات دوباره انجام شود.
-       */
       requestAnimationFrame(() => {
         ScrollTrigger.refresh();
+        checkInViewport();
       });
     };
 
     initializeAnimation();
 
     return () => {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
-
-      /*
-       * ❌ این کار را نباید انجام دهیم:
-       *
-       * ScrollTrigger.getAll().forEach(...)
-       *
-       * چون horizontal-scroll اصلی را هم
-       * از بین می‌برد.
-       */
-
+      if (timeoutId) clearTimeout(timeoutId);
+      if (rafId !== null) cancelAnimationFrame(rafId);
       ctx?.revert();
     };
-  }, []);
+  }, [isRtl, playEntrance, resetEntrance]);
+
+  const emailValue = t("info.emailValue");
+  const phoneValue = t("info.phoneValue");
 
   return (
-    <div
+    <section
+      ref={sectionRef}
       className="
-        contactMe
-        lg:w-full
-        mo:w-[90%]
-        mo:py-4
-        border-[3px]
-        border-primary
-        rounded-3xl
-        animated-border-box
-        !h-auto
-        pb-4
-        !max-h-[85%]
+        relative
+        w-full
+        min-h-[75dvh]
+        lg:h-dvh
+        px-4
+        sm:px-8
+        py-10
+        lg:py-14
+        flex
+        items-center
+        justify-center
+        text-text-white
       "
     >
-      <section
-        ref={sectionRef}
+      <div
+        aria-hidden="true"
         className="
-          px-6
-          text-white
-          persian
+          pointer-events-none
+          absolute
+          -top-10
+          -left-10
+          w-64
+          h-64
+          lg:w-80
+          lg:h-80
+          rounded-full
+          bg-primary/20
+          blur-3xl
+        "
+      />
+      <div
+        aria-hidden="true"
+        className="
+          pointer-events-none
+          absolute
+          -bottom-10
+          -right-10
+          w-64
+          h-64
+          lg:w-80
+          lg:h-80
+          rounded-full
+          bg-purple/20
+          blur-3xl
+        "
+      />
+
+      <div
+        className="
+          contactMe
+          relative
+          z-10
+          w-full
+          max-w-2xl
+          lg:max-w-3xl
+          rounded-3xl
+          bg-dark/90
+          border
+          border-primary/40
+          shadow-[0_12px_40px_rgba(116,100,201,0.16)]
+          p-6
+          sm:p-8
+          lg:p-10
         "
       >
-        {/* =========================
-            HEADER
-        ========================== */}
+        <div className="mx-auto mb-5 h-1 w-16 rounded-full bg-gradient-to-r from-primary via-purple to-primary" />
 
-        <div
-          className="
-            mx-auto
-            my-10
-            flex
-            flex-col
-            items-center
-            justify-center
-            text-center
-          "
-        >
+        <div className="mx-auto mb-6 flex flex-col items-center justify-center text-center space-y-2">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-primary/15 border border-primary/30 text-xs font-medium text-text-white">
+            <span className="h-2 w-2 rounded-full bg-purple" />
+            <span>{t("badge")}</span>
+          </div>
+
           <Title ref={titleRef} tag="h3">
-            تماس با من
+            {t("title")}
           </Title>
 
-          <p
-            className="
-              lg:text-lg
-              text-sm
-              font-light
-              mo:text-justify
-              lg:text-center
-              persian
-            "
-          >
-            خوشحال می‌شم نظرت رو بدونم یا اگر پروژه‌ای داشتی، باهام در ارتباط
-            باشی.
+          <p className="text-sm sm:text-base font-light text-center text-text-white/85 max-w-xl leading-7">
+            {t("description")}
           </p>
         </div>
 
-        {/* =========================
-            FORM
-        ========================== */}
-
         <form
           ref={formRef}
-          className="
-            max-w-2xl
-            mx-auto
-            flex
-            flex-col
-            gap-1.5
-          "
+          className="max-w-2xl mx-auto flex flex-col gap-3"
           onSubmit={(e) => {
             e.preventDefault();
-
-            alert("فرم ارسال شد!");
+            alert(t("form.submittedAlert"));
           }}
         >
-          <input
-            type="text"
-            placeholder="نام"
-            className="
-              p-4
-              text-sm
-              rounded-xl
-              bg-[#1a1a1a]
-              border
-              border-primary
-              text-white
-            "
-            required
-          />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <input
+              type="text"
+              placeholder={t("form.namePlaceholder")}
+              className="
+                p-3.5
+                text-sm
+                rounded-xl
+                bg-white/[0.03]
+                border
+                border-grey-dark/70
+                focus:border-primary
+                focus:outline-none
+                text-text-white
+                placeholder:text-grey
+                transition
+              "
+              required
+            />
 
-          <input
-            type="email"
-            placeholder="ایمیل"
-            className="
-              p-4
-              text-sm
-              rounded-xl
-              bg-[#1a1a1a]
-              border
-              border-primary
-              text-white
-            "
-            required
-          />
+            <input
+              type="email"
+              placeholder={t("form.emailPlaceholder")}
+              className="
+                p-3.5
+                text-sm
+                rounded-xl
+                bg-white/[0.03]
+                border
+                border-grey-dark/70
+                focus:border-primary
+                focus:outline-none
+                text-text-white
+                placeholder:text-grey
+                transition
+              "
+              required
+            />
+          </div>
 
           <textarea
-            placeholder="پیام شما"
-            rows={5}
+            placeholder={t("form.messagePlaceholder")}
+            rows={4}
             className="
-              p-4
+              p-3.5
               text-sm
               rounded-xl
-              bg-[#1a1a1a]
+              bg-white/[0.03]
               border
-              border-primary
-              text-white
+              border-grey-dark/70
+              focus:border-primary
+              focus:outline-none
+              text-text-white
+              placeholder:text-grey
               resize-none
+              transition
             "
             required
           />
@@ -291,64 +315,52 @@ const ContactMe: React.FC<ContactMeProp> = () => {
           <button
             type="submit"
             className="
-              bg-primary
-              my-3
-              text-sm
-              hover:cursor-pointer
-              hover:bg-purple-600
-              transition
+              mt-1
+              w-full
               rounded-xl
-              py-3
+              py-3.5
+              text-sm
               font-bold
+              text-white
+              bg-gradient-to-r
+              from-primary
+              to-purple
+              hover:opacity-95
+              active:scale-[0.99]
+              transition
+              cursor-pointer
+              shadow-[0_6px_20px_rgba(116,100,201,0.3)]
             "
           >
-            ارسال پیام
+            {t("form.submitButton")}
           </button>
         </form>
 
-        {/* =========================
-            CONTACT INFO
-        ========================== */}
-
-        <div
-          className="
-            text-center
-            mt-2
-            text-sm
-            text-gray-400
-            space-y-1
-          "
-        >
+        <div className="mt-6 pt-4 border-t border-grey-dark/50 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs sm:text-sm text-grey text-center">
           <p>
-            ایمیل:{" "}
+            {t("info.emailLabel")}{" "}
             <a
-              href="mailto:faeze0078@gmail.com"
-              className="
-                text-primary
-                hover:underline
-              "
+              href={`mailto:${emailValue}`}
+              className="text-text-white hover:text-primary transition underline-offset-4 hover:underline"
             >
-              faeze0078@gmail.com
+              {emailValue}
             </a>
           </p>
 
           <p>
-            شماره تماس:{" "}
+            {t("info.phoneLabel")}{" "}
             <a
-              href="tel:09930513574"
-              className="
-                text-primary
-                hover:underline
-              "
+              href={`tel:${phoneValue}`}
+              className="text-text-white hover:text-primary transition underline-offset-4 hover:underline"
             >
-              09930513574
+              {phoneValue}
             </a>
           </p>
 
-          <p>لوکیشن: تهران، ایران</p>
+          <p>{t("info.location")}</p>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
   );
 };
 

@@ -1,8 +1,6 @@
 import { useEffect, useRef } from "react";
 
-import { Breakpoint } from "@/hooks/shared/useDetectSize";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import gsap from "gsap";
+import { Breakpoint } from "@/hooks/shared/useDetectSize"
 
 interface UseScrollWrapperEffectsProps {
   breakpoint: Breakpoint;

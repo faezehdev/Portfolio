@@ -1,9 +1,8 @@
-import { useCallback, useImperativeHandle, useRef } from "react";
+import { useCallback, useRef } from "react";
 
 import { Breakpoint } from "@/hooks/shared/useDetectSize";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ScrollWrapperHandle } from "@/components/scroll/ScrollWrapper";
 import gsap from "gsap";
 
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
@@ -11,11 +10,13 @@ gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 interface UseHorizontalScrollProps {
   breakpoint: Breakpoint;
   setCurrentSection?: (section: number) => void;
+  isRtl?: boolean;
 }
 
 export const useHorizontalScroll = ({
   breakpoint,
   setCurrentSection,
+  isRtl = false,
 }: UseHorizontalScrollProps) => {
   const container = useRef<HTMLDivElement | null>(null);
   const content = useRef<HTMLDivElement | null>(null);
@@ -46,9 +47,11 @@ export const useHorizontalScroll = ({
     scrollTrigger.current = null;
     animation.current = null;
 
-    gsap.set(content.current, {
-      clearProps: "transform",
-    });
+    if (content.current) {
+      gsap.set(content.current, {
+        clearProps: "transform",
+      });
+    }
   }, []);
 
   const updateScrollbar = useCallback(() => {
@@ -71,24 +74,16 @@ export const useHorizontalScroll = ({
     }
 
     const scrollbarWidth = scrollbar.current.clientWidth;
+    const thumbWidth = (viewportWidth / totalWidth) * scrollbarWidth;
 
-    const thumbWidth =
-      (viewportWidth / totalWidth) * scrollbarWidth;
+    thumb.current.style.width = `${Math.max(20, thumbWidth)}px`;
 
-    thumb.current.style.width = `${Math.max(
-      20,
-      thumbWidth,
-    )}px`;
+    const rawProgress = scrollTrigger.current?.progress ?? 0;
+    const visualProgress = isRtl ? 1 - rawProgress : rawProgress;
+    const maxThumbPosition = scrollbarWidth - thumb.current.clientWidth;
 
-    const progress = scrollTrigger.current?.progress ?? 0;
-
-    const maxThumbPosition =
-      scrollbarWidth - thumb.current.clientWidth;
-
-    thumb.current.style.left = `${
-      progress * maxThumbPosition
-    }px`;
-  }, []);
+    thumb.current.style.left = `${visualProgress * maxThumbPosition}px`;
+  }, [isRtl]);
 
   const initializeScroll = useCallback(() => {
     if (isMobile) {
@@ -102,27 +97,17 @@ export const useHorizontalScroll = ({
     const containerElement = container.current;
     const contentElement = content.current;
 
-    /*
-     * Kill old instance
-     */
     killScrollAnimation();
 
-    /*
-     * Sections
-     */
     const sections = getSections();
 
     if (!sections.length) {
       return;
     }
 
-    /*
-     * Real horizontal distance
-     */
     const scrollDistance = Math.max(
       0,
-      contentElement.scrollWidth -
-        containerElement.clientWidth,
+      contentElement.scrollWidth - containerElement.clientWidth,
     );
 
     if (scrollDistance <= 0) {
@@ -130,64 +115,46 @@ export const useHorizontalScroll = ({
       return;
     }
 
-    /*
-     * Initial scrollbar
-     */
-    updateScrollbar();
+    const startX = 0;
+    const endX = isRtl ? scrollDistance : -scrollDistance;
 
-    /*
-     * Horizontal animation
-     */
-    const horizontalAnimation = gsap.to(contentElement, {
-      x: -scrollDistance,
-      ease: "none",
-      duration: 1,
-      paused: true,
-    });
+    gsap.set(contentElement, { x: startX, force3D: true });
+
+    const horizontalAnimation = gsap.fromTo(
+      contentElement,
+      { x: startX },
+      {
+        x: endX,
+        ease: "none",
+        duration: 1,
+        paused: true,
+        force3D: true,
+      },
+    );
 
     animation.current = horizontalAnimation;
 
-    /*
-     * ScrollTrigger
-     */
     const trigger = ScrollTrigger.create({
       id: "horizontal-scroll",
-
       animation: horizontalAnimation,
-
       trigger: containerElement,
-
       start: "top top",
-
       end: `+=${scrollDistance}`,
-
       scrub: 0.3,
-
       pin: true,
-
       anticipatePin: 1,
-
       invalidateOnRefresh: true,
-
       onUpdate: (self) => {
         const progress = self.progress;
+        const visualProgress = isRtl ? 1 - progress : progress;
 
-        /*
-         * Custom scrollbar
-         */
         if (thumb.current && scrollbar.current) {
           const maxThumbPosition =
-            scrollbar.current.clientWidth -
-            thumb.current.clientWidth;
+            scrollbar.current.clientWidth - thumb.current.clientWidth;
 
-          thumb.current.style.left = `${
-            progress * maxThumbPosition
-          }px`;
+          thumb.current.style.left = `${visualProgress * maxThumbPosition}px`;
         }
 
-        /*
-         * Active section
-         */
         const totalSections = sections.length;
 
         if (!totalSections || !setCurrentSection) {
@@ -196,28 +163,21 @@ export const useHorizontalScroll = ({
 
         const horizontalIndex = Math.min(
           totalSections - 1,
-          Math.round(
-            progress * (totalSections - 1),
-          ),
+          Math.round(progress * (totalSections - 1)),
         );
 
-        const sectionIndex = horizontalIndex + 1;
-
-        setCurrentSection(sectionIndex);
+        setCurrentSection(horizontalIndex + 1);
       },
-
       onEnter: () => {
         if (setCurrentSection) {
           setCurrentSection(1);
         }
       },
-
       onLeave: () => {
         if (setCurrentSection) {
           setCurrentSection(sections.length);
         }
       },
-
       onLeaveBack: () => {
         if (setCurrentSection) {
           setCurrentSection(0);
@@ -226,25 +186,15 @@ export const useHorizontalScroll = ({
     });
 
     scrollTrigger.current = trigger;
-
-    /*
-     * Save exact scroll boundaries
-     */
     scrollStart.current = trigger.start;
     scrollEnd.current = trigger.end;
 
-    /*
-     * Final refresh
-     */
     ScrollTrigger.refresh();
-
-    /*
-     * Update after refresh
-     */
     updateScrollbar();
   }, [
     getSections,
     isMobile,
+    isRtl,
     killScrollAnimation,
     setCurrentSection,
     updateScrollbar,
@@ -256,27 +206,22 @@ export const useHorizontalScroll = ({
         return;
       }
 
-      progress = Math.max(
-        0,
-        Math.min(1, progress),
-      );
+      progress = Math.max(0, Math.min(1, progress));
+      const effectiveProgress = isRtl ? 1 - progress : progress;
 
       const targetY =
         scrollStart.current +
-        (scrollEnd.current - scrollStart.current) *
-          progress;
+        (scrollEnd.current - scrollStart.current) * effectiveProgress;
 
       gsap.to(window, {
         scrollTo: {
           y: targetY,
         },
-
         duration: 0.8,
-
         ease: "power2.out",
       });
     },
-    [],
+    [isRtl],
   );
 
   const scrollToSection = useCallback(
@@ -291,27 +236,18 @@ export const useHorizontalScroll = ({
         return;
       }
 
-      /*
-       * Home
-       */
       if (index === 0) {
-        const home =
-          document.getElementById("section-0");
+        const home = document.getElementById("section-0");
 
         if (home) {
-          const rect =
-            home.getBoundingClientRect();
-
-          const targetY =
-            rect.top + window.scrollY;
+          const rect = home.getBoundingClientRect();
+          const targetY = rect.top + window.scrollY;
 
           gsap.to(window, {
             scrollTo: {
               y: targetY,
             },
-
             duration: 0.8,
-
             ease: "power2.out",
           });
         }
@@ -321,31 +257,22 @@ export const useHorizontalScroll = ({
 
       const horizontalIndex = index - 1;
 
-      if (
-        horizontalIndex < 0 ||
-        horizontalIndex >= sections.length
-      ) {
+      if (horizontalIndex < 0 || horizontalIndex >= sections.length) {
         return;
       }
 
       const progress =
-        sections.length === 1
-          ? 0
-          : horizontalIndex /
-            (sections.length - 1);
+        sections.length === 1 ? 0 : horizontalIndex / (sections.length - 1);
 
       const targetY =
         scrollStart.current +
-        (scrollEnd.current - scrollStart.current) *
-          progress;
+        (scrollEnd.current - scrollStart.current) * progress;
 
       gsap.to(window, {
         scrollTo: {
           y: targetY,
         },
-
         duration: 0.8,
-
         ease: "power2.out",
       });
     },
@@ -361,20 +288,15 @@ export const useHorizontalScroll = ({
     content,
     scrollbar,
     thumb,
-
     scrollTrigger,
     animation,
-
     scrollStart,
     scrollEnd,
-
     isMobile,
-
     getSections,
     killScrollAnimation,
     updateScrollbar,
     initializeScroll,
-
     scrollToHorizontalProgress,
     scrollToSection,
     getContainer,

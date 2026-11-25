@@ -28,6 +28,7 @@ export default function HomeClient() {
 
   return (
     <>
+    
       <Header
         currentSection={currentSection}
         handleMenuClick={handleMenuClick}
