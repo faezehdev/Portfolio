@@ -1,59 +1,12 @@
-// import { FC } from "react"
-// import ScrollWrapper from "../scroll/ScrollWrapper"
-// import { activeOnScrollReturnType } from "@/hooks/useActiveSectionScroll";
-// import Slider from "./Seaction2/Slider";
-// import AboutMe from "./Section3/AboutMe";
-// import ContactMe from "./Section4/ContactMe";
-// export type DesktopContentPropType = Pick<
-//   activeOnScrollReturnType,
-//   "firstSectionRef" | "currentSection" | "scrollWrapperRef"|"setCurrentSection"
-// >;
-// const DesktopContent:FC<DesktopContentPropType> = ({firstSectionRef,
-// currentSection,
-// setCurrentSection,
-// scrollWrapperRef})=>{
-//     return(
-//         <>
-//             <ScrollWrapper firstSectionRef={firstSectionRef} currentSection={currentSection} setCurrentSection={setCurrentSection} ref={scrollWrapperRef}  >
-
-//               <section
-//                 id="section-1"
-//                 className="section lg:w-screen overflow-hidden md:h-screen flex items-center justify-center text-6xl font-bold">
-
-//                 <Slider />
-
-//               </section>
-
-//               <section
-//                 id="section-2"
-//                 className="section lg:w-screen overflow-hidden md:h-screen flex items-center justify-center text-6xl font-bold">
-
-//                 <AboutMe />
-//               </section>
-
-//               <section
-//                 id="section-3"
-//                 className="section lg:w-screen md:h-screen flex items-center justify-center text-6xl font-bold">
-
-//                 <ContactMe />
-//               </section>
-
-
-
-//             </ScrollWrapper>
-//         </>
-//     )
-// }
-// export default DesktopContent
-
-"use client";
+import React, { FC } from "react";
 
 import AboutMe from "./Section3/AboutMe";
 import ContactMe from "./Section4/ContactMe";
-import { FC } from "react";
+import { ProjectData } from "@/app/[locale]/page";
 import ScrollWrapper from "../scroll/ScrollWrapper";
 import Slider from "./Seaction2/Slider";
 import { activeOnScrollReturnType } from "@/hooks/useActiveSectionScroll";
+import { useLocale } from "next-intl";
 
 export type DesktopContentPropType = Pick<
   activeOnScrollReturnType,
@@ -61,83 +14,62 @@ export type DesktopContentPropType = Pick<
   | "currentSection"
   | "scrollWrapperRef"
   | "setCurrentSection"
->;
+> & {
+  projects: ProjectData[];
+};
+
+const sectionBaseClass =
+  "section shrink-0 w-screen min-h-dvh h-auto md:h-screen overflow-hidden flex items-center justify-center py-8 md:py-0";
 
 const DesktopContent: FC<DesktopContentPropType> = ({
   firstSectionRef,
   currentSection,
   setCurrentSection,
   scrollWrapperRef,
+  projects,
 }) => {
+  const locale = useLocale();
+  const isRtl = locale === "fa";
+
+  const sections = [
+    <section
+      key="section-1"
+      id="section-1"
+      data-section-index="1"
+      dir={isRtl ? "rtl" : "ltr"}
+      className={sectionBaseClass}
+    >
+      <Slider projects={projects} />
+    </section>,
+    <section
+      key="section-2"
+      id="section-2"
+      data-section-index="2"
+      dir={isRtl ? "rtl" : "ltr"}
+      className={sectionBaseClass}
+    >
+      <AboutMe />
+    </section>,
+    <section
+      key="section-3"
+      id="section-3"
+      data-section-index="3"
+      dir={isRtl ? "rtl" : "ltr"}
+      className={`${sectionBaseClass} md:min-w-[500px]`}
+    >
+      <ContactMe />
+    </section>,
+  ];
+
   return (
     <ScrollWrapper
       ref={scrollWrapperRef}
       firstSectionRef={firstSectionRef}
       currentSection={currentSection}
       setCurrentSection={setCurrentSection}
+      isRtl={isRtl}
     >
-      {/* =========================
-          SECTION 1
-      ========================== */}
-      <section
-        id="section-1"
-        data-section-index="1"
-        dir="rtl"
-        className="
-          section
-          w-screen
-          h-screen
-          shrink-0
-          overflow-hidden
-          flex
-          items-center
-          justify-center
-        "
-      >
-        <Slider />
-      </section>
-
-      {/* =========================
-          SECTION 2
-      ========================== */}
-      <section
-        id="section-2"
-        data-section-index="2"
-        dir="rtl"
-        className="
-          section
-          w-screen
-          h-screen
-          shrink-0
-          overflow-hidden
-          flex
-          items-center
-          justify-center
-        "
-      >
-        <AboutMe />
-      </section>
-
-      {/* =========================
-          SECTION 3
-      ========================== */}
-      <section
-        id="section-3"
-        data-section-index="3"
-        dir="rtl"
-        className="
-          section
-          w-screen
-          h-screen
-          shrink-0
-          overflow-hidden
-          flex
-          items-center
-          justify-center
-        "
-      >
-        <ContactMe />
-      </section>
+      {sections}
     </ScrollWrapper>
   );
 };

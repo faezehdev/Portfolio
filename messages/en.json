@@ -1,20 +1,53 @@
 {
-    "header":{
-       "nav":{
-        "home":"Home",
-        "projects":"Projects",
-        "about-me":"About Me",
-        "contact-me":"Contact Me"
-
-       }
-    },
-    "homepage":{
-        "title":"faezeh"
-    },
-      "heroSection":{
-        "text-1":"Im Faezeh",
-        "text-2":"Frontend Developer",
-        "text-3":"React Developer",
-        "text-4":"Next.js Developer"
+  "header": {
+    "nav": {
+      "home": "Home",
+      "projects": "Projects",
+      "about-me": "About Me",
+      "contact-me": "Contact Me"
     }
+  },
+  "homepage": {
+    "title": "faezeh"
+  },
+  "heroSection": {
+    "text-1": "Im Faezeh",
+    "text-2": "Frontend Developer",
+    "text-3": "React Developer",
+    "text-4": "Next.js Developer"
+  },
+  "projectsSection": {
+    "badge": "Selected Works",
+    "title": "My Projects",
+    "description": "A selection of user interfaces and front-end projects crafted with a focus on user experience and performance."
+  },
+  "aboutSection": {
+    "badge": "Front-end Developer",
+    "title": "About Me",
+    "description": "I'm Faezeh, a front-end developer passionate about creating interactive and engaging user experiences. I love learning and exploring something new in React and web technologies every day, from real-world projects to technical challenges.",
+    "skills": [
+      "React & Next.js",
+      "TypeScript",
+      "Interactive UI"
+    ]
+  },
+  "contactSection": {
+    "badge": "Get In Touch",
+    "title": "Contact Me",
+    "description": "I'd love to hear your thoughts or collaborate if you have a project in mind.",
+    "form": {
+      "namePlaceholder": "Name",
+      "emailPlaceholder": "Email",
+      "messagePlaceholder": "Your message",
+      "submitButton": "Send Message",
+      "submittedAlert": "Form submitted!"
+    },
+    "info": {
+      "emailLabel": "Email:",
+      "emailValue": "faeze0078@gmail.com",
+      "phoneLabel": "Phone:",
+      "phoneValue": "09930513574",
+      "location": "Tehran, Iran"
+    }
+  }
 }

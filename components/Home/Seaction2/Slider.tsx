@@ -1,370 +1,158 @@
-// "use client";
-
-// import "swiper/css";
-
-// import { Swiper, SwiperSlide } from "swiper/react";
-// import { useEffect, useRef } from "react";
-
-// import Project from "./Project";
-// import { ScrollTrigger } from "gsap/ScrollTrigger";
-// import Title from "@/components/shared/title/Title";
-// import { gsap } from "gsap";
-
-// gsap.registerPlugin(ScrollTrigger);
-
-// const Slider = () => {
-//   const sectionRef = useRef<HTMLDivElement | null>(null);
-//   const slidesRef = useRef<(HTMLDivElement | null)[]>([]);
-//   const titleRef = useRef<HTMLHeadingElement | null>(null);
-
-//   useEffect(() => {
-//     let timeoutId: ReturnType<typeof setTimeout> | null = null;
-//     let ctx: gsap.Context | null = null;
-
-//     const initializeAnimation = () => {
-//       const horizontalTrigger = ScrollTrigger.getById("horizontal-scroll");
-
-//       const containerAnimation = horizontalTrigger?.animation;
-
-//       if (!containerAnimation) {
-//         timeoutId = setTimeout(initializeAnimation, 100);
-
-//         return;
-//       }
-
-//       ctx = gsap.context(() => {
-//         const slides = slidesRef.current.filter(
-//           (el): el is HTMLDivElement => el !== null,
-//         );
-
-//         /*
-//          * --------------------------------
-//          * INITIAL STATE
-//          * --------------------------------
-//          */
-
-//         gsap.set(slides, {
-//           opacity: 0,
-//           y: 50,
-//         });
-
-//         if (titleRef.current) {
-//           gsap.set(titleRef.current, {
-//             opacity: 0,
-//             x: -50,
-//           });
-//         }
-
-//         /*
-//          * --------------------------------
-//          * TIMELINE
-//          * --------------------------------
-//          */
-
-//         const tl = gsap.timeline({
-//           paused: true,
-//           defaults: {
-//             ease: "power2.out",
-//           },
-//         });
-
-//         /*
-//          * TITLE
-//          */
-
-//         if (titleRef.current) {
-//           tl.to(
-//             titleRef.current,
-//             {
-//               opacity: 1,
-//               x: 0,
-//               duration: 0.7,
-//             },
-//             0,
-//           );
-//         }
-
-//         /*
-//          * PROJECTS
-//          */
-
-//         tl.to(
-//           slides,
-//           {
-//             opacity: 1,
-//             y: 0,
-//             duration: 0.7,
-//             stagger: 0.12,
-//           },
-//           0.15,
-//         );
-
-//         /*
-//          * --------------------------------
-//          * SCROLL TRIGGER
-//          * --------------------------------
-//          */
-
-//         ScrollTrigger.create({
-//           trigger: sectionRef.current,
-
-//           containerAnimation,
-
-//           start: "left 85%",
-//           end: "left 25%",
-
-//           /*
-//            * فقط وقتی اولین بار وارد بخش می‌شویم
-//            */
-
-//           onEnter: () => {
-//             tl.play();
-//           },
-
-//           /*
-//            * خیلی مهم:
-//            *
-//            * اینجا هیچ reverse یا play نداریم.
-//            *
-//            * بنابراین وقتی کاربر برمی‌گردد،
-//            * انیمیشن دستکاری نمی‌شود.
-//            */
-
-//           onLeaveBack: () => {
-//             // intentionally empty
-//           },
-
-//           onEnterBack: () => {
-//             // intentionally empty
-//           },
-//         });
-//       }, sectionRef);
-
-//       requestAnimationFrame(() => {
-//         ScrollTrigger.refresh();
-//       });
-//     };
-
-//     initializeAnimation();
-
-//     return () => {
-//       if (timeoutId) {
-//         clearTimeout(timeoutId);
-//       }
-
-//       ctx?.revert();
-//     };
-//   }, []);
-
-//   const renderSlides = () => {
-//     return [0, 1, 2, 3].map((_, index) => (
-//       <SwiperSlide
-//         key={index}
-//         className="
-//           h-full
-//           w-full
-//           overflow-hidden
-//           flex
-//           items-center
-//           justify-center
-//         "
-//       >
-//         <div
-//           ref={(el) => {
-//             slidesRef.current[index] = el;
-//           }}
-//           className="
-//             flex
-//             h-full
-//             w-full
-//             items-center
-//             justify-center
-//           "
-//         >
-//           <Project />
-//         </div>
-//       </SwiperSlide>
-//     ));
-//   };
-
-//   return (
-//     <div
-//       ref={sectionRef}
-//       className="
-//         mx-auto
-//         my-auto
-//         flex
-//         h-auto
-//         w-[80%]
-//         flex-col
-//         lg:max-h-svh
-//       "
-//     >
-//       <Title ref={titleRef} tag="h2" className="persian">
-//         پروژه های من
-//       </Title>
-//       <div className="max-w-[80vw] overflow-hidden">
-//         <Swiper
-//           className="w-full overflow-hidden"
-//           spaceBetween={50}
-//           slidesPerView={3}
-//           breakpoints={{
-//             320: {
-//               slidesPerView: 1,
-//             },
-//             640: {
-//               slidesPerView: 1.2,
-//             },
-//             768: {
-//               slidesPerView: 2,
-//             },
-//             1024: {
-//               slidesPerView: 2.5,
-//             },
-//             1280: {
-//               slidesPerView: 3,
-//             },
-//           }}
-//         >
-//           {renderSlides()}
-//         </Swiper>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Slider;
 "use client";
 
 import "swiper/css";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
+import { useLocale, useTranslations } from "next-intl";
 
 import Project from "./Project";
+import { ProjectData } from "@/app/[locale]/page";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Title from "@/components/shared/title/Title";
 import { gsap } from "gsap";
 
+interface SliderProps {
+  projects: ProjectData[];
+}
+
 gsap.registerPlugin(ScrollTrigger);
 
-const Slider = () => {
-  const sectionRef = useRef<HTMLDivElement | null>(null);
+const Slider = ({ projects = [] }: SliderProps) => {
+  const t = useTranslations("projectsSection");
+  const locale = useLocale();
+  const isRtl = locale === "fa";
 
+  const sectionRef = useRef<HTMLElement | null>(null);
   const slidesRef = useRef<(HTMLDivElement | null)[]>([]);
-
   const titleRef = useRef<HTMLHeadingElement | null>(null);
+  const hasPlayedRef = useRef(false);
+
+  const playEntrance = useCallback(() => {
+    if (hasPlayedRef.current) return;
+    hasPlayedRef.current = true;
+
+    const slides = slidesRef.current.filter(
+      (el): el is HTMLDivElement => el !== null,
+    );
+
+    if (titleRef.current) {
+      gsap.fromTo(
+        titleRef.current,
+        { opacity: 0, x: isRtl ? 40 : -40, force3D: true },
+        {
+          opacity: 1,
+          x: 0,
+          duration: 0.75,
+          ease: "power2.out",
+          overwrite: "auto",
+        },
+      );
+    }
+
+    if (slides.length > 0) {
+      gsap.fromTo(
+        slides,
+        { opacity: 0, y: 40, force3D: true },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.75,
+          stagger: 0.12,
+          delay: 0.1,
+          ease: "power2.out",
+          overwrite: "auto",
+        },
+      );
+    }
+  }, [isRtl]);
+
+  const resetEntrance = useCallback(() => {
+    hasPlayedRef.current = false;
+
+    const slides = slidesRef.current.filter(
+      (el): el is HTMLDivElement => el !== null,
+    );
+
+    if (titleRef.current) {
+      gsap.set(titleRef.current, {
+        opacity: 0,
+        x: isRtl ? 40 : -40,
+        force3D: true,
+      });
+    }
+
+    if (slides.length > 0) {
+      gsap.set(slides, {
+        opacity: 0,
+        y: 40,
+        force3D: true,
+      });
+    }
+  }, [isRtl]);
 
   useEffect(() => {
-    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+    const isDesktop = window.matchMedia("(min-width: 768px)").matches;
+    if (!isDesktop) return;
 
+    resetEntrance();
+
+    let attempts = 0;
+    const maxAttempts = 40;
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
     let ctx: gsap.Context | null = null;
+
+    const checkVisibility = () => {
+      if (!sectionRef.current) return;
+      const rect = sectionRef.current.getBoundingClientRect();
+      const viewportWidth = window.innerWidth;
+
+      const isInView =
+        rect.left < viewportWidth * 0.85 && rect.right > viewportWidth * 0.15;
+
+      if (isInView) {
+        playEntrance();
+      } else if (rect.left >= viewportWidth || rect.right <= 0) {
+        resetEntrance();
+      }
+    };
 
     const initializeAnimation = () => {
       const horizontalTrigger = ScrollTrigger.getById("horizontal-scroll");
-
       const containerAnimation = horizontalTrigger?.animation;
 
-      if (!containerAnimation) {
-        timeoutId = setTimeout(initializeAnimation, 100);
-
+      if (!containerAnimation || !sectionRef.current) {
+        attempts += 1;
+        if (attempts < maxAttempts) {
+          timeoutId = setTimeout(initializeAnimation, 100);
+        } else {
+          playEntrance();
+        }
         return;
       }
 
       ctx = gsap.context(() => {
-        const slides = slidesRef.current.filter(
-          (el): el is HTMLDivElement => el !== null,
-        );
-
-        /*
-         * --------------------------------
-         * INITIAL STATE
-         * --------------------------------
-         */
-
-        gsap.set(slides, {
-          opacity: 0,
-          y: 50,
-          force3D: true,
-        });
-
-        if (titleRef.current) {
-          gsap.set(titleRef.current, {
-            opacity: 0,
-            x: -50,
-            force3D: true,
-          });
-        }
-
-        /*
-         * --------------------------------
-         * TIMELINE
-         * --------------------------------
-         */
-
-        const tl = gsap.timeline({
-          paused: true,
-
-          defaults: {
-            ease: "power2.out",
-          },
-        });
-
-        /*
-         * TITLE
-         */
-
-        if (titleRef.current) {
-          tl.to(
-            titleRef.current,
-            {
-              opacity: 1,
-              x: 0,
-              duration: 0.7,
-              overwrite: "auto",
-            },
-            0,
-          );
-        }
-
-        /*
-         * PROJECTS
-         */
-
-        tl.to(
-          slides,
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.7,
-            stagger: 0.12,
-            overwrite: "auto",
-          },
-          0.15,
-        );
-
-        /*
-         * --------------------------------
-         * SCROLL TRIGGER
-         * --------------------------------
-         */
-
         ScrollTrigger.create({
           trigger: sectionRef.current,
-
           containerAnimation,
-
-          start: "left 85%",
-          end: "left 25%",
-
-          /*
-           * وقتی وارد Projects می‌شویم
-           */
-
-          onEnter: () => {
-            tl.play();
-          },
+          start: "left right",
+          end: "right left",
+          onEnter: playEntrance,
+          onEnterBack: playEntrance,
+          onLeaveBack: resetEntrance,
+          onLeave: resetEntrance,
         });
+
+        const onContainerUpdate = () => {
+          requestAnimationFrame(checkVisibility);
+        };
+
+        containerAnimation.eventCallback("onUpdate", onContainerUpdate);
+        checkVisibility();
+
+        return () => {
+          containerAnimation.eventCallback("onUpdate", null);
+        };
       }, sectionRef);
     };
 
@@ -374,88 +162,137 @@ const Slider = () => {
       if (timeoutId) {
         clearTimeout(timeoutId);
       }
-
       ctx?.revert();
     };
-  }, []);
+  }, [isRtl, playEntrance, resetEntrance, projects.length]);
 
-  const renderSlides = () => {
-    return [0, 1, 2, 3].map((_, index) => (
-      <SwiperSlide
-        key={index}
-        className="
-          h-full
-          w-full
-          overflow-hidden
-          flex
-          items-center
-          justify-center
-        "
+const renderSlides = () => {
+  return projects.map((project, index) => (
+    <SwiperSlide
+      key={project.id}
+      className="!w-auto !h-auto shrink-0 flex items-center justify-center"
+    >
+      <div
+        ref={(el) => {
+          slidesRef.current[index] = el;
+        }}
+        className="flex items-center justify-center py-2"
       >
-        <div
-          ref={(el) => {
-            slidesRef.current[index] = el;
-          }}
-          className="
-            flex
-            h-full
-            w-full
-            items-center
-            justify-center
-          "
-        >
-          <Project />
-        </div>
-      </SwiperSlide>
-    ));
-  };
+        <Project project={project} />
+      </div>
+    </SwiperSlide>
+  ));
+};
 
   return (
-    <div
+    <section
       ref={sectionRef}
       className="
-        mx-auto
-        my-auto
+        relative
+        w-full
+        min-h-[75dvh]
+        lg:h-dvh
+        px-4
+        sm:px-8
+        py-10
+        lg:py-14
         flex
-        h-auto
-        w-[80%]
-        flex-col
-        lg:max-h-svh
+        items-center
+        justify-center
+        text-text-white
       "
     >
-      <Title ref={titleRef} tag="h2" className="persian">
-        پروژه های من
-      </Title>
+      <div
+        aria-hidden="true"
+        className="
+          pointer-events-none
+          absolute
+          -top-10
+          -right-10
+          w-64
+          h-64
+          lg:w-80
+          lg:h-80
+          rounded-full
+          bg-primary/20
+          blur-3xl
+        "
+      />
+      <div
+        aria-hidden="true"
+        className="
+          pointer-events-none
+          absolute
+          -bottom-10
+          -left-10
+          w-64
+          h-64
+          lg:w-80
+          lg:h-80
+          rounded-full
+          bg-purple/20
+          blur-3xl
+        "
+      />
 
-      <Swiper
-        className="w-full"
-        spaceBetween={50}
-        slidesPerView={3}
-        breakpoints={{
-          320: {
-            slidesPerView: 1,
-          },
-
-          640: {
-            slidesPerView: 1.2,
-          },
-
-          768: {
-            slidesPerView: 2,
-          },
-
-          1024: {
-            slidesPerView: 2.5,
-          },
-
-          1280: {
-            slidesPerView: 3,
-          },
-        }}
+      <div
+        className="
+          relative
+          z-10
+          w-full
+          max-w-6xl
+          rounded-3xl
+          bg-dark/90
+          border
+          border-primary/40
+          shadow-[0_12px_40px_rgba(116,100,201,0.16)]
+          p-6
+          sm:p-8
+          lg:p-10
+          flex
+          flex-col
+          gap-6
+        "
       >
-        {renderSlides()}
-      </Swiper>
-    </div>
+        <div className="mx-auto h-1 w-16 rounded-full bg-gradient-to-r from-primary via-purple to-primary" />
+
+        <div className="flex flex-col items-center justify-center text-center space-y-2">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-primary/15 border border-primary/30 text-xs font-medium text-text-white">
+            <span className="h-2 w-2 rounded-full bg-purple" />
+            <span>{t("badge")}</span>
+          </div>
+
+          <Title ref={titleRef} tag="h2">
+            {t("title")}
+          </Title>
+
+          <p className="text-xs sm:text-sm lg:text-base font-light text-text-white/80 max-w-xl">
+            {t("description")}
+          </p>
+        </div>
+
+        <div className="w-full pt-2">
+        <Swiper
+  className="w-full !overflow-visible sm:!overflow-hidden"
+  spaceBetween={24}
+  slidesPerView="auto"
+  breakpoints={{
+    320: {
+      spaceBetween: 16,
+    },
+    640: {
+      spaceBetween: 20,
+    },
+    1024: {
+      spaceBetween: 24,
+    },
+  }}
+>
+  {renderSlides()}
+</Swiper>
+        </div>
+      </div>
+    </section>
   );
 };
 

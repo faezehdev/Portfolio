@@ -13,8 +13,11 @@ const getBreakpoint = (width: number): Breakpoint => {
 
 export const useDetectSize = () => {
   const [breakpoint, setBreakpoint] = useState<Breakpoint>("xs");
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+
     const handleResize = () => {
       setBreakpoint(getBreakpoint(window.innerWidth));
     };
@@ -28,5 +31,8 @@ export const useDetectSize = () => {
     };
   }, []);
 
-  return { breakpoint };
+  return {
+    breakpoint,
+    mounted,
+  };
 };

@@ -1,32 +1,84 @@
-import Slider from "./Seaction2/Slider"
-import AboutMe from "./Section3/AboutMe"
-import ContactMe from "./Section4/ContactMe"
+"use client";
 
-const MobileContent = ()=>{
-    return(
-        <>
-            <section
-                id="section-1"
-                className="section lg:w-screen overflow-hidden  flex items-center justify-center text-6xl font-bold">
+import AboutMe from "./Section3/AboutMe";
+import ContactMe from "./Section4/ContactMe";
+import { ProjectData } from "@/app/[locale]/page";
+import Slider from "./Seaction2/Slider";
+import { useRef } from "react";
+import { useScrollReveal } from "@/hooks/shared/useScrollReveal";
 
-                <Slider />
-
-              </section>
-
-              <section
-                id="section-2"
-                className="section py-[2em] lg:w-screen overflow-hidden  flex items-center justify-center text-6xl font-bold">
-
-                <AboutMe />
-              </section>
-
-              <section
-                id="section-3"
-                className="section lg:w-screen pb-[3em] flex items-center justify-center text-6xl font-bold">
-
-                <ContactMe />
-              </section>
-        </>
-    )
+interface MobileContentProps {
+  projects: ProjectData[];
 }
-export default MobileContent
+
+const MobileSection = ({
+  children,
+  id,
+}: {
+  children: React.ReactNode;
+  id: string;
+}) => {
+  const ref = useRef<HTMLElement | null>(null);
+
+  useScrollReveal(ref);
+
+  return (
+    <section
+      ref={ref}
+      id={id}
+      className="
+        section
+        mobile-section-reveal
+        w-full
+        overflow-hidden
+        flex
+        flex-col
+        items-center
+        justify-center
+        font-bold
+      "
+    >
+      {children}
+    </section>
+  );
+};
+
+const MobileContent = ({ projects = [] }: MobileContentProps) => {
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  return (
+    <>
+      <MobileSection id="section-1">
+        <Slider projects={projects} />
+      </MobileSection>
+
+      <MobileSection id="section-2">
+        <AboutMe />
+      </MobileSection>
+
+      <MobileSection id="section-3">
+        <div className="w-full flex flex-col items-center justify-center gap-6">
+          <ContactMe />
+
+          <footer
+            className="w-[91%] max-w-3xl pt-4 pb-6 border-t
+           border-white/10 flex items-center justify-between text-xs font-normal text-white persian"
+          >
+            <span>ساخته‌شده با ❤️ — تهران</span>
+            <button
+              type="button"
+              onClick={scrollToTop}
+              className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-primary/20 text-primary transition cursor-pointer"
+            >
+              بازگشت به بالا ↑
+            </button>
+          </footer>
+        </div>
+      </MobileSection>
+    </>
+  );
+};
+
+export default MobileContent;
