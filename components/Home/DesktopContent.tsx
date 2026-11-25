@@ -2,6 +2,7 @@ import React, { FC } from "react";
 
 import AboutMe from "./Section3/AboutMe";
 import ContactMe from "./Section4/ContactMe";
+import { ProjectData } from "@/app/[locale]/page";
 import ScrollWrapper from "../scroll/ScrollWrapper";
 import Slider from "./Seaction2/Slider";
 import { activeOnScrollReturnType } from "@/hooks/useActiveSectionScroll";
@@ -13,7 +14,9 @@ export type DesktopContentPropType = Pick<
   | "currentSection"
   | "scrollWrapperRef"
   | "setCurrentSection"
->;
+> & {
+  projects: ProjectData[];
+};
 
 const sectionBaseClass =
   "section shrink-0 w-screen min-h-dvh h-auto md:h-screen overflow-hidden flex items-center justify-center py-8 md:py-0";
@@ -23,6 +26,7 @@ const DesktopContent: FC<DesktopContentPropType> = ({
   currentSection,
   setCurrentSection,
   scrollWrapperRef,
+  projects,
 }) => {
   const locale = useLocale();
   const isRtl = locale === "fa";
@@ -35,7 +39,7 @@ const DesktopContent: FC<DesktopContentPropType> = ({
       dir={isRtl ? "rtl" : "ltr"}
       className={sectionBaseClass}
     >
-      <Slider />
+      <Slider projects={projects} />
     </section>,
     <section
       key="section-2"

@@ -7,13 +7,18 @@ import { useCallback, useEffect, useRef } from "react";
 import { useLocale, useTranslations } from "next-intl";
 
 import Project from "./Project";
+import { ProjectData } from "@/app/[locale]/page";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Title from "@/components/shared/title/Title";
 import { gsap } from "gsap";
 
+interface SliderProps {
+  projects: ProjectData[];
+}
+
 gsap.registerPlugin(ScrollTrigger);
 
-const Slider = () => {
+const Slider = ({ projects = [] }: SliderProps) => {
   const t = useTranslations("projectsSection");
   const locale = useLocale();
   const isRtl = locale === "fa";
@@ -102,8 +107,8 @@ const Slider = () => {
       const rect = sectionRef.current.getBoundingClientRect();
       const viewportWidth = window.innerWidth;
 
-      // وقتی سکشن در محدوده‌ی دید قرار می‌گیرد
-      const isInView = rect.left < viewportWidth * 0.85 && rect.right > viewportWidth * 0.15;
+      const isInView =
+        rect.left < viewportWidth * 0.85 && rect.right > viewportWidth * 0.15;
 
       if (isInView) {
         playEntrance();
@@ -138,7 +143,6 @@ const Slider = () => {
           onLeave: resetEntrance,
         });
 
-        // همگام‌سازی دقیق با هر فریم حرکت کانتینر در RTL و LTR
         const onContainerUpdate = () => {
           requestAnimationFrame(checkVisibility);
         };
@@ -160,28 +164,25 @@ const Slider = () => {
       }
       ctx?.revert();
     };
-  }, [isRtl, playEntrance, resetEntrance]);
+  }, [isRtl, playEntrance, resetEntrance, projects.length]);
 
-  const renderSlides = () => {
-    return [0, 1, 2, 3].map((_, index) => (
-      <SwiperSlide key={index} className="!h-auto flex items-stretch">
-        <div
-          ref={(el) => {
-            slidesRef.current[index] = el;
-          }}
-          className="
-            flex
-            w-full
-            items-center
-            justify-center
-            py-2
-          "
-        >
-          <Project />
-        </div>
-      </SwiperSlide>
-    ));
-  };
+const renderSlides = () => {
+  return projects.map((project, index) => (
+    <SwiperSlide
+      key={project.id}
+      className="!w-auto !h-auto shrink-0 flex items-center justify-center"
+    >
+      <div
+        ref={(el) => {
+          slidesRef.current[index] = el;
+        }}
+        className="flex items-center justify-center py-2"
+      >
+        <Project project={project} />
+      </div>
+    </SwiperSlide>
+  ));
+};
 
   return (
     <section
@@ -271,35 +272,24 @@ const Slider = () => {
         </div>
 
         <div className="w-full pt-2">
-          <Swiper
-            className="w-full !overflow-visible sm:!overflow-hidden"
-            spaceBetween={20}
-            slidesPerView={1}
-            breakpoints={{
-              320: {
-                slidesPerView: 1,
-                spaceBetween: 16,
-              },
-              640: {
-                slidesPerView: 1.25,
-                spaceBetween: 20,
-              },
-              768: {
-                slidesPerView: 2,
-                spaceBetween: 24,
-              },
-              1024: {
-                slidesPerView: 2.5,
-                spaceBetween: 28,
-              },
-              1280: {
-                slidesPerView: 3,
-                spaceBetween: 28,
-              },
-            }}
-          >
-            {renderSlides()}
-          </Swiper>
+        <Swiper
+  className="w-full !overflow-visible sm:!overflow-hidden"
+  spaceBetween={24}
+  slidesPerView="auto"
+  breakpoints={{
+    320: {
+      spaceBetween: 16,
+    },
+    640: {
+      spaceBetween: 20,
+    },
+    1024: {
+      spaceBetween: 24,
+    },
+  }}
+>
+  {renderSlides()}
+</Swiper>
         </div>
       </div>
     </section>

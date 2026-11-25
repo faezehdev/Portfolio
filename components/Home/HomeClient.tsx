@@ -1,10 +1,10 @@
-
 "use client";
 
 import DesktopContent from "./DesktopContent";
 import Header from "@/components/header/header";
 import HeroSection from "./HeroSection";
 import MobileContent from "./MobileContent";
+import { ProjectData } from "@/app/[locale]/page";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SharedLayout from "@/app/[locale]/(shared)/layout";
 import gsap from "gsap";
@@ -13,7 +13,11 @@ import { useDetectSize } from "@/hooks/shared/useDetectSize";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function HomeClient() {
+interface HomeClientProps {
+  projects: ProjectData[];
+}
+
+export default function HomeClient({ projects }: HomeClientProps) {
   const { breakpoint } = useDetectSize();
 
   const {
@@ -28,17 +32,12 @@ export default function HomeClient() {
 
   return (
     <>
-    
       <Header
         currentSection={currentSection}
         handleMenuClick={handleMenuClick}
       />
 
       <SharedLayout>
-        {/* =========================
-            SECTION 0
-            Normal vertical scroll
-        ========================== */}
         <section
           ref={firstSectionRef}
           id="section-0"
@@ -57,21 +56,15 @@ export default function HomeClient() {
           <HeroSection />
         </section>
 
-        {/* =========================
-            MOBILE
-        ========================== */}
         {isMobile ? (
-          <MobileContent />
+          <MobileContent  projects={projects} />
         ) : (
-          /* =========================
-             DESKTOP
-             Horizontal scroll
-          ========================== */
           <DesktopContent
             firstSectionRef={firstSectionRef}
             currentSection={currentSection}
             scrollWrapperRef={scrollWrapperRef}
             setCurrentSection={setCurrentSection}
+            projects={projects}
           />
         )}
       </SharedLayout>
