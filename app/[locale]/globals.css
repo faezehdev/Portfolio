@@ -152,9 +152,13 @@ html.english body,
   font-style: normal;
 }
 
-.cursive {
-  font-family: "Caveat", cursive;
+html.persian .cursive {
+  font-family: "YekanBakh";
 }
+html.english .cursive {
+  font-family: "Caveat";
+}
+
 
 /* =========================
    LAYOUT & SCROLL HELPERS
